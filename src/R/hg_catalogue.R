@@ -4,6 +4,9 @@ library(purrr)
 library(readr)
 library(stringr)
 
+# example find command to generate file analysed by the script. 
+# $ find  /project/higgslab -type f,l -iregex '.*fastq.*' -fprintf higgs_fastq3 '%T+\t%p\t%l\t%s\t%y\n' 
+
 find_raw <- read_tsv(
     '../higgs_fastq3',
     col_names = c("modified", "fpath", "symlink", "bytes", "type")
@@ -40,14 +43,7 @@ fq_files <- find_raw |>
     mutate(MB = bytes / 1024^2) |>
     select(!c(bytes)) |>
     relocate(owner, .before = fpath) 
-names(fq_files)
 
-sample(fq_files$symlink,20)
-test <- fq_files |>
-    filter(! is.na(symlink))
-
-test$symlink
-sample(test$symlink,5)
 wb <- wb_workbook()
 wb$add_worksheet("fastq files")
 wb$add_worksheet("find errors")
@@ -56,8 +52,3 @@ wb$add_data(sheet=1, fq_files)
 wb$add_data(sheet=2, err)
 
 wb_save(wb, file="fastq_files.xlsx", overwrite=TRUE)
-
-
-sample(fq_files, 10)
-fq_files[4]
-length(fq_files)
