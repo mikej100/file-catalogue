@@ -161,4 +161,4 @@ cython_debug/
 
 
 # Mike Jenning settings
-test/test_workspace
+workspace
